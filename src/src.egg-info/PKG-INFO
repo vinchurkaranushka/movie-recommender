@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: src
+Version: 0.0.1
+Summary: A small example package for movies  recommendation
+Author: Anushka Vinchurkar
+Author-email: mahakalvinchurkar@gmail.com
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Requires-Dist: streamlit
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+Movies recommender system
