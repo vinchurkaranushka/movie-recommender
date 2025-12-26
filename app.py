@@ -1,13 +1,29 @@
 import pickle
 import streamlit as st
 import requests
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer
 
 API_KEY = "f18f8550e656dca54599c250e3d9eae8"
 
 def fetch_poster(movie_id):
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
     data = requests.get(url).json()
-    return "https://image.tmdb.org/t/p/w500" + data["poster_path"]
+    if data.get("poster_path"):
+        return "https://image.tmdb.org/t/p/w500" + data["poster_path"]
+    return None
+
+@st.cache_data
+def load_and_compute():
+    movies = pickle.load(open("artifacts/movie_list.pkl", "rb"))
+
+    cv = CountVectorizer(max_features=5000, stop_words="english")
+    vectors = cv.fit_transform(movies["tags"]).toarray()
+    similarity = cosine_similarity(vectors)
+
+    return movies, similarity
+
+movies, similarity = load_and_compute()
 
 def recommend(movie):
     index = movies[movies['title'] == movie].index[0]
@@ -25,9 +41,6 @@ def recommend(movie):
 
 st.header("Movies Recommendation System")
 
-movies = pickle.load(open("artifacts/movie_list.pkl", "rb"))
-similarity = pickle.load(open("artifacts/similarity.pkl", "rb"))
-
 selected_movie = st.selectbox("Select a movie", movies['title'].values)
 
 if st.button("Show recommendation"):
@@ -36,4 +49,5 @@ if st.button("Show recommendation"):
     for i in range(5):
         with cols[i]:
             st.text(names[i])
-            st.image(posters[i])
+            if posters[i]:
+                st.image(posters[i])
