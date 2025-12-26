@@ -1,4 +1,5 @@
-artifacts/*.pkl
 env/
+artifacts/similarity.pkl
+artifacts/*.pkl
 .ipynb_checkpoints/
 __pycache__/
